@@ -1,12 +1,20 @@
 const mongoose = require("mongoose");
 const mongooseDelete = require("mongoose-delete");
 
-const AdditionalServicesSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  description: { type: String },
-  price: { type: Number, required: true },
-  isActive: { type: Boolean, default: true },
-});
+const AdditionalServicesSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    description: { type: String },
+    defaultPrice: { type: Number, required: true },
+    category: {
+      type: String,
+      enum: ["food", "laundry", "cleaning", "maintenance", "other"],
+      default: "other",
+    },
+    isActive: { type: Boolean, default: true },
+  },
+  { timestamps: true }
+);
 
 AdditionalServicesSchema.plugin(mongooseDelete, {
   deletedAt: true,

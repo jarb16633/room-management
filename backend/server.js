@@ -3,6 +3,7 @@ var express = require("express");
 var morgan = require("morgan");
 var connectDB = require("./utils/connectDB");
 var authRoutes = require("./routes/authRoutes.js");
+var roomRoutes = require("./routes/roomRoutes.js");
 
 const app = express();
 
@@ -22,6 +23,7 @@ connectDB();
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/room", roomRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server is running on ${PORT}`));

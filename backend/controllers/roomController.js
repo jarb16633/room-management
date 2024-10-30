@@ -55,6 +55,19 @@ exports.deleteRoom = async (req, res) => {
   }
 };
 
+exports.restoreRoom = async (req, res) => {
+  try {
+    const { roomId } = req.params;
+    const room = await Room.findOneWithDeleted({ _id: roomId });
+    if (!room) return res.status(404).json({ message: "Room not found" });
+
+    await room.restore();
+    res.json({ message: "Room restored successfully" });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
 exports.updateMeterReading = async (req, res) => {
   try {
     const { roomId } = req.params;

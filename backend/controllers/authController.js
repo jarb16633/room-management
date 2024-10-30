@@ -129,5 +129,7 @@ exports.getUsersByID = async (req, res) => {
     }
 
     res.json({ message: "success", user });
-  } catch (error) {}
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 };

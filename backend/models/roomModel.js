@@ -1,8 +1,39 @@
 const mongoose = require("mongoose");
 const mongooseDelete = require("mongoose-delete");
-const MeterReadingSchema = require("./meterModel");
-const AdditionalServiceSchema = require("./additionalServiceModel");
-const facilitiesSchema = require("./facilitiesModel");
+
+// Define MeterReading Schema inline
+const MeterReadingSchema = new mongoose.Schema({
+  electricity: {
+    current: { type: Number, required: true },
+    previous: { type: Number, required: true },
+    unitsUsed: { type: Number },
+    pricePerUnit: { type: Number, default: 5 },
+    total: { type: Number },
+  },
+  water: {
+    current: { type: Number, required: true },
+    previous: { type: Number, required: true },
+    unitsUsed: { type: Number },
+    pricePerUnit: { type: Number, default: 20 },
+    total: { type: Number },
+  },
+  readingDate: { type: Date, default: Date.now },
+});
+
+// Define Additional Service Schema inline
+const AdditionalServiceSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  price: { type: Number, required: true },
+  description: String,
+  isActive: { type: Boolean, default: true },
+});
+
+// Define Facilities Schema inline
+const FacilitiesSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  status: { type: String, default: "working" },
+  lastChecked: { type: Date },
+});
 
 const RoomSchema = new mongoose.Schema(
   {
@@ -39,7 +70,7 @@ const RoomSchema = new mongoose.Schema(
       water: { type: Number, default: 0 },
     },
     additionalServices: [AdditionalServiceSchema],
-    facilities: [facilitiesSchema],
+    facilities: [FacilitiesSchema],
     notes: { type: String },
     lastMaintenanceDate: [
       {
@@ -64,7 +95,7 @@ RoomSchema.virtual("currentBill").get(function () {
     electricity: lastReading.electricity.total,
     water: lastReading.water.total,
     base: this.basePrice,
-    AdditionalServiceSchema: this.additionalServices
+    additionalServices: this.additionalServices
       .filter((service) => service.isActive)
       .reduce((total, service) => total + service.price, 0),
     total:
@@ -83,7 +114,7 @@ RoomSchema.methods.updateMeterReadings = function (readings) {
     electricity: {
       current: readings.electricity,
       previous: this.currentMeterReading.electricity,
-      unitsUsed: (readings.electricity = this.currentMeterReading.electricity),
+      unitsUsed: readings.electricity - this.currentMeterReading.electricity,
       pricePerUnit: 5,
       total: (readings.electricity - this.currentMeterReading.electricity) * 5,
     },

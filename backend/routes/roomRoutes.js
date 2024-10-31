@@ -6,6 +6,12 @@ const {
   updateRoom,
   deleteRoom,
   restoreRoom,
+  updateMeterReading,
+  updateRoomStatus,
+  addAdditionalService,
+  updateAdditionalService,
+  addMaintenanceRecord,
+  getRoomBill,
 } = require("../controllers/roomController");
 const { authenticate, authorize } = require("../middleware/authMiddleware");
 
@@ -23,36 +29,36 @@ router.post(
   "/:roomId/meter-reading",
   authenticate,
   authorize("admin", "manager"),
-  roomController.updateMeterReading
+  updateMeterReading
 );
 
 router.patch(
   "/:roomId/status",
   authenticate,
   authorize("admin", "manager"),
-  roomController.updateRoomStatus
+  updateRoomStatus
 );
 
 router.post(
   "/:roomId/services",
   authenticate,
   authorize("admin", "manager"),
-  roomController.addAdditionalService
+  addAdditionalService
 );
 
 router.patch(
   "/:roomId/services/:serviceId",
   authenticate,
   authorize("admin", "manager"),
-  roomController.updateAdditionalService
+  updateAdditionalService
 );
 
 router.post(
   "/:roomId/maintenance",
   authenticate,
   authorize("admin", "manager"),
-  roomController.addMaintenanceRecord
+  addMaintenanceRecord
 );
 
-router.get("/:roomId/bill", authenticate, roomController.getRoomBill);
+router.get("/:roomId/bill", authenticate, getRoomBill);
 module.exports = router;

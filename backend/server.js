@@ -2,6 +2,7 @@ require("dotenv").config();
 var express = require("express");
 var morgan = require("morgan");
 var connectDB = require("./utils/connectDB");
+var cors = require("cors");
 var authRoutes = require("./routes/authRoutes.js");
 var roomRoutes = require("./routes/roomRoutes.js");
 
@@ -13,6 +14,12 @@ app.use(express.json());
 // Morgan logging
 app.use(morgan("tiny"));
 
+// Cors
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+  })
+);
 // For testing purpose
 app.get("/", (req, res) => {
   res.send("Hello, world");
